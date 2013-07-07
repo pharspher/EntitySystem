@@ -1,6 +1,6 @@
 package spongecake;
 
-public class Component {
+public abstract class Component {
     private String mTag;
 
     public void setTag(String tag) {

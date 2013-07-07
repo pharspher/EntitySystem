@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import spongecake.EntityManager.Entity;
+
 public class SimpleEntityManager extends EntityManager {
     private static final String TAG = SimpleEntityManager.class.getSimpleName();
 
@@ -19,7 +21,7 @@ public class SimpleEntityManager extends EntityManager {
     }
 
     @Override
-    public void addComponent(Entity entity, Component component) {
+    public <T extends Component> EntityManager addComponent(Entity entity, T component) {
         String componentName = component.getClass().getSimpleName();
         int entityID = entity.mID;
 
@@ -36,6 +38,28 @@ public class SimpleEntityManager extends EntityManager {
         componentList.add(component);
         componentStore.put(entityID, componentList);
         mComponentStores.put(componentName, componentStore);
+
+        return this;
+    }
+
+    @Override
+    public ArrayList<Component> getComponent(Class<? extends Component> componentClass) {
+        ArrayList<Component> components = new ArrayList<Component>();
+
+        HashMap<Integer, ArrayList<Component>> componentStore = mComponentStores.get(componentClass.getSimpleName());
+        Set<Integer> entityIDs = componentStore.keySet();
+        for (Integer entityID : entityIDs) {
+            components.addAll(componentStore.get(entityID));
+        }
+        return components;
+    }
+
+    public ArrayList<Component> getComponent(Entity entity, Class<? extends Component> componentClass) {
+        ArrayList<Component> components = new ArrayList<Component>();
+
+        HashMap<Integer, ArrayList<Component>> componentStore = mComponentStores.get(componentClass.getSimpleName());
+        components.addAll(componentStore.get(entity.mID));
+        return components;
     }
 
     @Override
