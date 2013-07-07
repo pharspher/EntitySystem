@@ -4,7 +4,9 @@ public abstract class EntityManager {
     private static EntityManager mManager;
 
     public static EntityManager getDefaultManager() {
-        mManager = new SimpleEntityManager();
+        if (mManager == null) {
+            mManager = new SimpleEntityManager();
+        }
         return mManager;
     }
 
